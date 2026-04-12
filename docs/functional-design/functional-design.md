@@ -287,6 +287,14 @@ EventReporterに登録するSubscriberの責務:
 
 **テレメトリパイプライン**: アプリケーション → OTel Metrics SDK → OTLP Exporter → OTel Collector → CloudWatch Metrics
 
+### 5.4 OTel Collector経由が必須である理由
+
+3シグナルすべてのパイプラインがOTel Collectorを経由する構成としている。これは設計上の選択ではなく、Ruby OTel SDKの制約による。
+
+CloudWatch OTLPエンドポイントはリクエストにAWS SigV4署名を要求する。Ruby OTel SDKのOTLP Exporter（opentelemetry-exporter-otlp）は標準的なOTLP HTTPリクエストを送信するのみで、SigV4署名の機能を持たない。Python・Java・Go・.NETにはAWS提供のOTelディストリビューションが存在するが、Ruby向けは提供されていない。
+
+そのため、OTel Collectorのsigv4auth拡張でSigV4署名を付与し、CloudWatch OTLPエンドポイントに送信する構成が、Ruby環境における現実的に唯一の方法となる。
+
 ## 6. インフラ設計
 
 ### 6.1 コンテナ構成
@@ -364,3 +372,4 @@ CloudWatch OTLPエンドポイントに送信するため、標準のOTLP HTTP e
 |------------|------|----------|
 | 1.0 | 2026/04/12 | 初版作成 |
 | 1.1 | 2026/04/12 | 自動品質検証の結果を反映（Collector構成修正、FK制約追加、排他制御追加等） |
+| 1.2 | 2026/04/12 | OTel Collector経由が必須である理由（Ruby SDK SigV4非対応）を追記 |
