@@ -194,6 +194,15 @@ GEM
       opentelemetry-common (~> 0.20)
       opentelemetry-sdk (~> 1.10)
       opentelemetry-semantic_conventions
+    opentelemetry-exporter-otlp-logs (0.4.0)
+      google-protobuf (>= 3.18)
+      googleapis-common-protos-types (~> 1.3)
+      opentelemetry-api (~> 1.1)
+      opentelemetry-common (~> 0.20)
+      opentelemetry-logs-api (~> 0.1)
+      opentelemetry-logs-sdk (~> 0.1)
+      opentelemetry-sdk
+      opentelemetry-semantic_conventions
     opentelemetry-helpers-mysql (0.5.0)
       opentelemetry-api (~> 1.7)
       opentelemetry-common (~> 0.21)
@@ -348,6 +357,12 @@ GEM
       opentelemetry-helpers-sql-processor
       opentelemetry-instrumentation-base (~> 0.25)
       opentelemetry-semantic_conventions (>= 1.8.0)
+    opentelemetry-logs-api (0.3.0)
+      opentelemetry-api (~> 1.0)
+    opentelemetry-logs-sdk (0.5.0)
+      opentelemetry-api (~> 1.2)
+      opentelemetry-logs-api (~> 0.1)
+      opentelemetry-sdk (~> 1.3)
     opentelemetry-registry (0.5.0)
       opentelemetry-api (~> 1.1)
     opentelemetry-sdk (1.11.0)
@@ -520,7 +535,9 @@ DEPENDENCIES
   importmap-rails
   kamal
   opentelemetry-exporter-otlp
+  opentelemetry-exporter-otlp-logs
   opentelemetry-instrumentation-all
+  opentelemetry-logs-sdk
   opentelemetry-sdk
   pg (~> 1.1)
   propshaft

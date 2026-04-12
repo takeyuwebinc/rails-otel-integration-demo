@@ -7,3 +7,10 @@ OpenTelemetry::SDK.configure do |c|
 
   c.use_all
 end
+
+# EventReporter → OTel Logs Subscriber
+Rails.application.config.after_initialize do
+  if defined?(Rails.event)
+    Rails.event.subscribe(OtelLogsSubscriber.new)
+  end
+end

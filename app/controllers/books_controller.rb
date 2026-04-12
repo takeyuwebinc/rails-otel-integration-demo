@@ -8,6 +8,7 @@ class BooksController < ApplicationController
 
   # GET /books/1
   def show
+    Rails.event.notify("book.viewed", book_id: @book.id, title: @book.title)
   end
 
   # GET /books/new

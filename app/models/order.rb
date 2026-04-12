@@ -16,7 +16,14 @@ class Order < ApplicationRecord
     next_status = NEXT_STATUS[status]
     raise ActiveRecord::RecordInvalid, self unless next_status
 
+    previous_status = status
     update!(status: next_status)
+
+    Rails.event.notify("order.status_changed",
+      order_number: order_number,
+      from_status: previous_status,
+      to_status: next_status
+    )
   end
 
   def can_advance?
@@ -33,6 +40,21 @@ class Order < ApplicationRecord
 
       order = create!(book: locked_book, quantity: quantity)
       locked_book.update!(stock: locked_book.stock - quantity)
+
+      Rails.event.notify("order.created",
+        order_number: order.order_number,
+        book_id: locked_book.id,
+        quantity: quantity,
+        total_amount: order.total_amount
+      )
+
+      remaining_stock = locked_book.stock
+      if remaining_stock <= 5
+        Rails.event.notify("inventory.low",
+          book_id: locked_book.id,
+          remaining_stock: remaining_stock
+        )
+      end
 
       order
     end
