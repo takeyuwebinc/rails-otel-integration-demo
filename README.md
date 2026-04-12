@@ -100,6 +100,15 @@ aws xray update-trace-segment-destination --destination CloudWatchLogs
 
 参考: [Enable transaction search - Amazon CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Enable-TransactionSearch.html)
 
+### CloudWatch Logsのロググループ作成
+
+EventReporterイベントの送信先となるロググループとログストリームを事前に作成する。
+
+```bash
+aws logs create-log-group --log-group-name /otel/bookstore-demo
+aws logs create-log-stream --log-group-name /otel/bookstore-demo --log-stream-name events
+```
+
 ### リージョン
 
 CloudWatch Metrics OTLPエンドポイントは以下の5リージョンでPublic Preview（2026年4月時点）。
