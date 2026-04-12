@@ -96,7 +96,16 @@ aws logs put-resource-policy \
 aws xray update-trace-segment-destination --destination CloudWatchLogs
 ```
 
+デフォルトではトレースのインデキシング率が1%のため、デモ用途では100%に変更する。
+
+```bash
+aws xray update-indexing-rule --name Default \
+  --rule '{"Probabilistic": {"DesiredSamplingPercentage": 100}}'
+```
+
 これらの設定はリージョンごとに1回だけ実行すればよい。
+
+トレースの確認は CloudWatch → X-Ray traces → Traces（Transaction Search）で行う。`aws/spans`ロググループに保存されたトレースが検索対象となる。
 
 参考: [Enable transaction search - Amazon CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Enable-TransactionSearch.html)
 
