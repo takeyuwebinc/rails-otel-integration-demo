@@ -32,19 +32,26 @@ class OtelLogsSubscriber
     end
 
     # context → attributes with "context." prefix
-    context = event[:context]
-    if context.respond_to?(:each)
-      context.each do |key, value|
+    ctx = event[:context]
+    if ctx.respond_to?(:each)
+      ctx.each do |key, value|
         attributes["context.#{key}"] = value.to_s
       end
     end
+
+    # 現在のSpanコンテキストからtrace_id/span_idを取得し、Log Recordに付与する
+    span_context = OpenTelemetry::Trace.current_span.context
 
     @logger.on_emit(
       body: event[:name],
       severity_text: "INFO",
       severity_number: OpenTelemetry::Logs::SeverityNumber::SEVERITY_NUMBER_INFO,
       timestamp: event[:timestamp],
-      attributes: attributes
+      attributes: attributes,
+      trace_id: span_context&.trace_id,
+      span_id: span_context&.span_id,
+      trace_flags: span_context&.trace_flags,
+      context: OpenTelemetry::Context.current
     )
   end
 
