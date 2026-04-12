@@ -14,6 +14,7 @@ services:
       DATABASE_URL: postgres://postgres:password@db:5432/bookstore_otel_demo_development
       RAILS_ENV: development
       OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+      OTEL_RESOURCE_ATTRIBUTES: "aws.log.group.names=/otel/bookstore-demo"
     volumes:
       - .:/rails
       - bundle_cache:/usr/local/bundle
