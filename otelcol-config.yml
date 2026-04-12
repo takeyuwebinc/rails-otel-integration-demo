@@ -1,0 +1,70 @@
+extensions:
+  sigv4auth/xray:
+    region: ${env:AWS_REGION}
+    service: xray
+  sigv4auth/logs:
+    region: ${env:AWS_REGION}
+    service: logs
+  sigv4auth/monitoring:
+    region: ${env:AWS_REGION}
+    service: monitoring
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+
+  # CloudWatchが配列型属性をサポートしないため削除
+  attributes/remove_array:
+    actions:
+      - key: process.command_args
+        action: delete
+      - key: process.command_line
+        action: delete
+
+exporters:
+  otlphttp/xray:
+    endpoint: https://xray.${env:AWS_REGION}.amazonaws.com
+    auth:
+      authenticator: sigv4auth/xray
+
+  otlphttp/logs:
+    endpoint: https://logs.${env:AWS_REGION}.amazonaws.com
+    auth:
+      authenticator: sigv4auth/logs
+
+  otlphttp/monitoring:
+    endpoint: https://monitoring.${env:AWS_REGION}.amazonaws.com
+    auth:
+      authenticator: sigv4auth/monitoring
+
+  debug:
+    verbosity: basic
+
+service:
+  extensions:
+    - sigv4auth/xray
+    - sigv4auth/logs
+    - sigv4auth/monitoring
+
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch, attributes/remove_array]
+      exporters: [otlphttp/xray, debug]
+
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/logs, debug]
+
+    metrics:
+      receivers: [otlp]
+      processors: [batch, attributes/remove_array]
+      exporters: [otlphttp/monitoring, debug]

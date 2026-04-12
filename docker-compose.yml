@@ -8,9 +8,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      otel-collector:
+        condition: service_started
     environment:
       DATABASE_URL: postgres://postgres:password@db:5432/bookstore_otel_demo_development
       RAILS_ENV: development
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
     volumes:
       - .:/rails
       - bundle_cache:/usr/local/bundle
@@ -29,6 +32,18 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  otel-collector:
+    image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+    volumes:
+      - ./otelcol-config.yml:/etc/ecs/otel-collector-config.yaml
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION:-ap-southeast-1}
 
 volumes:
   postgres_data:
