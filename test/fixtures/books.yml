@@ -1,0 +1,17 @@
+ruby_book:
+  title: プログラミングRuby
+  author: Dave Thomas
+  price: 4800.00
+  stock: 15
+
+low_stock_book:
+  title: 達人プログラマー
+  author: David Thomas
+  price: 3600.00
+  stock: 3
+
+out_of_stock_book:
+  title: Design Patterns
+  author: GoF
+  price: 5200.00
+  stock: 0

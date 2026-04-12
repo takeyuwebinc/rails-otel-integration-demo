@@ -1,0 +1,13 @@
+<h1>注文詳細: <%= @order.order_number %></h1>
+
+<p><strong>書籍:</strong> <%= link_to @order.book.title, @order.book %></p>
+<p><strong>著者:</strong> <%= @order.book.author %></p>
+<p><strong>数量:</strong> <%= @order.quantity %></p>
+<p><strong>合計金額:</strong> <%= number_to_currency(@order.total_amount, unit: "¥", precision: 0) %></p>
+<p><strong>ステータス:</strong> <%= @order.status %></p>
+
+<% if @order.can_advance? %>
+  <%= button_to "ステータスを進める（#{@order.status} → #{Order::NEXT_STATUS[@order.status]}）", advance_order_path(@order), method: :patch %>
+<% end %>
+
+<%= link_to "注文一覧に戻る", orders_path %>

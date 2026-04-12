@@ -1,0 +1,32 @@
+<h1>注文一覧</h1>
+
+<%= link_to "新規注文", new_order_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th>注文番号</th>
+      <th>書籍</th>
+      <th>数量</th>
+      <th>合計金額</th>
+      <th>ステータス</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @orders.each do |order| %>
+      <tr>
+        <td><%= link_to order.order_number, order %></td>
+        <td><%= order.book.title %></td>
+        <td><%= order.quantity %></td>
+        <td><%= number_to_currency(order.total_amount, unit: "¥", precision: 0) %></td>
+        <td><%= order.status %></td>
+        <td>
+          <% if order.can_advance? %>
+            <%= button_to "#{order.status} → #{Order::NEXT_STATUS[order.status]}", advance_order_path(order), method: :patch %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

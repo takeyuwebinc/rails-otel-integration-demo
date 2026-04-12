@@ -1,0 +1,20 @@
+pending_order:
+  order_number: ORD-1
+  book: ruby_book
+  quantity: 2
+  total_amount: 9600.00
+  status: pending
+
+confirmed_order:
+  order_number: ORD-2
+  book: ruby_book
+  quantity: 1
+  total_amount: 4800.00
+  status: confirmed
+
+shipped_order:
+  order_number: ORD-3
+  book: low_stock_book
+  quantity: 1
+  total_amount: 3600.00
+  status: shipped

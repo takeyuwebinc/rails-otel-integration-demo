@@ -1,0 +1,17 @@
+<h1>新規注文</h1>
+
+<%= form_with url: orders_path, method: :post do |f| %>
+  <div>
+    <%= f.label :book_id, "書籍" %>
+    <%= f.select :book_id, @books.map { |b| ["#{b.title} (在庫: #{b.stock})", b.id] }, { prompt: "書籍を選択してください" }, { required: true } %>
+  </div>
+
+  <div>
+    <%= f.label :quantity, "数量" %>
+    <%= f.number_field :quantity, min: 1, value: 1, required: true %>
+  </div>
+
+  <%= f.submit "注文を確定する" %>
+<% end %>
+
+<%= link_to "注文一覧に戻る", orders_path %>

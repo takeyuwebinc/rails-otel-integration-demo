@@ -1,0 +1,8 @@
+注文確認
+
+注文番号: <%= @order.order_number %>
+書籍: <%= @order.book.title %>
+数量: <%= @order.quantity %>
+合計金額: ¥<%= @order.total_amount.to_i %>
+
+ありがとうございました。
