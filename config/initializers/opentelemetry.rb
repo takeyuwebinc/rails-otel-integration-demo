@@ -34,11 +34,10 @@ ORDERS_AMOUNT_HISTOGRAM = meter.create_histogram(
 )
 
 # EventReporter → OTel Logs Subscriber
-# ビジネスイベントのみをOTel Logsに送信する（フレームワーク内部イベントは除外）
-BUSINESS_EVENTS = %w[order.created order.status_changed book.viewed inventory.low].freeze
-
+# NOTE: フレームワーク内部イベント（active_record.sql等）も含め全イベントが送信される。
+#       フィルタリング方法については別途検討が必要。
 Rails.application.config.after_initialize do
   if defined?(Rails.event)
-    Rails.event.subscribe(OtelLogsSubscriber.new) { |event| BUSINESS_EVENTS.include?(event[:name]) }
+    Rails.event.subscribe(OtelLogsSubscriber.new)
   end
 end
