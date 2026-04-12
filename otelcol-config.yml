@@ -38,6 +38,9 @@ exporters:
     endpoint: https://logs.${env:AWS_REGION}.amazonaws.com
     auth:
       authenticator: sigv4auth/logs
+    headers:
+      x-aws-log-group: /otel/bookstore-demo
+      x-aws-log-stream: events
 
   otlphttp/monitoring:
     endpoint: https://monitoring.${env:AWS_REGION}.amazonaws.com
