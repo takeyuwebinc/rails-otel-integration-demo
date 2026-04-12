@@ -37,6 +37,8 @@ ORDERS_AMOUNT_HISTOGRAM = meter.create_histogram(
 # "app."プレフィクスを持つビジネスイベントのみを対象とする
 Rails.application.config.after_initialize do
   if defined?(Rails.event)
-    Rails.event.subscribe(OtelLogsSubscriber.new) { |event| event[:name].start_with?("app.") }
+    subscriber = OtelLogsSubscriber.new
+    Rails.event.subscribe(subscriber) { |event| event[:name].start_with?("app.") }
+    at_exit { subscriber.shutdown }
   end
 end
