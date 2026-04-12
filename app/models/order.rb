@@ -48,6 +48,9 @@ class Order < ApplicationRecord
         total_amount: order.total_amount
       )
 
+      ORDERS_CREATED_COUNTER.add(1)
+      ORDERS_AMOUNT_HISTOGRAM.record(order.total_amount.to_f)
+
       remaining_stock = locked_book.stock
       if remaining_stock <= 5
         Rails.event.notify("inventory.low",
