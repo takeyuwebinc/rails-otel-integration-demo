@@ -1,13 +1,6 @@
 require "opentelemetry-logs-sdk"
 
 class OtelLogsSubscriber
-  BUSINESS_EVENTS = %w[
-    order.created
-    order.status_changed
-    book.viewed
-    inventory.low
-  ].freeze
-
   def initialize
     @logger_provider = OpenTelemetry::SDK::Logs::LoggerProvider.new
     @logger_provider.add_log_record_processor(
@@ -20,8 +13,6 @@ class OtelLogsSubscriber
 
   # event is a Hash with keys: :name, :payload, :tags, :context, :timestamp, :source_location
   def emit(event)
-    return unless BUSINESS_EVENTS.include?(event[:name])
-
     attributes = {}
 
     # payload → attributes

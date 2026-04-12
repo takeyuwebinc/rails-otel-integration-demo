@@ -19,7 +19,7 @@ class Order < ApplicationRecord
     previous_status = status
     update!(status: next_status)
 
-    Rails.event.notify("order.status_changed",
+    Rails.event.notify("app.order.status_changed",
       order_number: order_number,
       from_status: previous_status,
       to_status: next_status
@@ -41,7 +41,7 @@ class Order < ApplicationRecord
       order = create!(book: locked_book, quantity: quantity)
       locked_book.update!(stock: locked_book.stock - quantity)
 
-      Rails.event.notify("order.created",
+      Rails.event.notify("app.order.created",
         order_number: order.order_number,
         book_id: locked_book.id,
         quantity: quantity,
@@ -53,7 +53,7 @@ class Order < ApplicationRecord
 
       remaining_stock = locked_book.stock
       if remaining_stock <= 5
-        Rails.event.notify("inventory.low",
+        Rails.event.notify("app.inventory.low",
           book_id: locked_book.id,
           remaining_stock: remaining_stock
         )
