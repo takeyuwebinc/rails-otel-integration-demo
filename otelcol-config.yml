@@ -69,5 +69,5 @@ service:
 
     metrics:
       receivers: [otlp]
-      processors: [batch, attributes/remove_array]
+      processors: [batch]
       exporters: [otlphttp/monitoring, debug]
