@@ -14,32 +14,10 @@ class OtelLogsSubscriber
   # event is a Hash with keys: :name, :payload, :tags, :context, :timestamp, :source_location
   def emit(event)
     attributes = {}
+    event[:payload]&.each { |key, value| attributes[key.to_s] = value }
+    event[:tags]&.each { |key, value| attributes["tag.#{key}"] = value }
+    event[:context]&.each { |key, value| attributes["context.#{key}"] = value }
 
-    # payload → attributes
-    payload = event[:payload]
-    if payload.respond_to?(:each)
-      payload.each do |key, value|
-        attributes[key.to_s] = value.to_s
-      end
-    end
-
-    # tags → attributes with "tag." prefix
-    tags = event[:tags]
-    if tags.respond_to?(:each)
-      tags.each do |key, value|
-        attributes["tag.#{key}"] = value.to_s
-      end
-    end
-
-    # context → attributes with "context." prefix
-    ctx = event[:context]
-    if ctx.respond_to?(:each)
-      ctx.each do |key, value|
-        attributes["context.#{key}"] = value.to_s
-      end
-    end
-
-    # 現在のSpanコンテキストからtrace_id/span_idを取得し、Log Recordに付与する
     span_context = OpenTelemetry::Trace.current_span.context
 
     @logger.on_emit(
